@@ -1,0 +1,25 @@
+{
+  "version": "VERSION_PLACEHOLDER",
+  "description": "Claude Skills & Agents CLI",
+  "homepage": "https://github.com/EIgentLab/csk-cli-source",
+  "license": "BUSL-1.1",
+  "architecture": {
+    "64bit": {
+      "url": "https://github.com/EIgentLab/csk-cli/releases/download/VERSION_PLACEHOLDER/csk_VERSION_PLACEHOLDER_Windows_x86_64.zip",
+      "extract_dir": "csk_VERSION_PLACEHOLDER_Windows_x86_64",
+      "bin": [
+        "csk.exe"
+      ]
+    }
+  },
+  "checkver": {
+    "github": "https://github.com/EIgentLab/csk-cli"
+  },
+  "autoupdate": {
+    "architecture": {
+      "64bit": {
+        "url": "https://github.com/EIgentLab/csk-cli/releases/download/$version/csk_$version_Windows_x86_64.zip"
+      }
+    }
+  }
+}
