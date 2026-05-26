@@ -5,21 +5,21 @@
 class Csk < Formula
   desc "Claude Skills & Agents CLI"
   homepage "https://github.com/EIgentLab/csk-cli-source"
-  version "1.0.0"
+  version "1.1.0"
   license "BUSL-1.1"
 
   on_macos do
     if Hardware::CPU.intel?
-      url "https://github.com/EIgentLab/csk-cli/releases/download/v1.0.0/csk_1.0.0_Darwin_x86_64.tar.gz"
-      sha256 "612a8240fa931a4d24d0e90b787faed18774a0ae92f0e685f8c4db5cd1488ea4"
+      url "https://github.com/EIgentLab/csk-cli/releases/download/v1.1.0/csk_1.1.0_Darwin_x86_64.tar.gz"
+      sha256 "2d9d44377a3ba5f0d317c95ce0583d8552c8c930d500717f21fe136abe940be9"
 
       define_method(:install) do
         bin.install "csk"
       end
     end
     if Hardware::CPU.arm?
-      url "https://github.com/EIgentLab/csk-cli/releases/download/v1.0.0/csk_1.0.0_Darwin_arm64.tar.gz"
-      sha256 "02c47c74479e0daf7b0750c2a15da1ac2b65e21d81ff4ba03eb9cad4bf41ab73"
+      url "https://github.com/EIgentLab/csk-cli/releases/download/v1.1.0/csk_1.1.0_Darwin_arm64.tar.gz"
+      sha256 "12429da4051bac32450906a9dd7f73ef041e2bd570831a183ca0bdfa32db0ffa"
 
       define_method(:install) do
         bin.install "csk"
@@ -29,15 +29,15 @@ class Csk < Formula
 
   on_linux do
     if Hardware::CPU.intel? && Hardware::CPU.is_64_bit?
-      url "https://github.com/EIgentLab/csk-cli/releases/download/v1.0.0/csk_1.0.0_Linux_x86_64.tar.gz"
-      sha256 "376e35f457b949268d9aed18e2db3f365a5cb9746acc698f996787fbada49d3e"
+      url "https://github.com/EIgentLab/csk-cli/releases/download/v1.1.0/csk_1.1.0_Linux_x86_64.tar.gz"
+      sha256 "dce5dd172d4c9ee444282fe2f8ac5d7ed7b80a09b3356b9added2a525e001a73"
       define_method(:install) do
         bin.install "csk"
       end
     end
     if Hardware::CPU.arm? && Hardware::CPU.is_64_bit?
-      url "https://github.com/EIgentLab/csk-cli/releases/download/v1.0.0/csk_1.0.0_Linux_arm64.tar.gz"
-      sha256 "4c736de043ef956a7ea6d49c28c32b07dc8c56e24af767a1250bfb864b623ff0"
+      url "https://github.com/EIgentLab/csk-cli/releases/download/v1.1.0/csk_1.1.0_Linux_arm64.tar.gz"
+      sha256 "39be1e318f08d06c7bc377cbbf5639375e28ce3f31dd90a4cf96177df0ec5feb"
       define_method(:install) do
         bin.install "csk"
       end
