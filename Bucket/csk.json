@@ -1,0 +1,15 @@
+{
+    "version": "1.0.0",
+    "architecture": {
+        "64bit": {
+            "url": "https://github.com/EIgentLab/csk-cli/releases/download/v1.0.0/csk_1.0.0_Windows_x86_64.zip",
+            "bin": [
+                "csk.exe"
+            ],
+            "hash": "445c02de0b47697cd230f65fe395dac4eb9dd42994f7d60afe591670acca6159"
+        }
+    },
+    "homepage": "https://github.com/EIgentLab/csk-cli-source",
+    "license": "BUSL-1.1",
+    "description": "Claude Skills \u0026 Agents CLI"
+}
