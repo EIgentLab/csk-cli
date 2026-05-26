@@ -32,27 +32,27 @@ It does three things:
 ### macOS / Linux — curl
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/EIgentLab/csk-cli/main/scripts/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/EIgentLab/csk-cli/dev-v1/scripts/install.sh | bash
 ```
 
-Installs to `~/.local/bin` (no `sudo` required). If `~/.local/bin` is not in your `PATH`, the installer will print instructions.
+Installs to `~/.local/bin` (no `sudo` required). Automatically adds `~/.local/bin` to your shell `PATH` using idempotent block markers (`# >>> csk-cli >>>` / `# <<< csk-cli <<<`). Reinstalls are safe — old blocks are replaced, not duplicated.
 
 System-wide install (requires write permission):
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/EIgentLab/csk-cli/main/scripts/install.sh | bash -s -- --install-dir /usr/local/bin
+curl -fsSL https://raw.githubusercontent.com/EIgentLab/csk-cli/dev-v1/scripts/install.sh | bash -s -- --install-dir /usr/local/bin
 ```
 
-Auto-add to shell `PATH`:
+Skip auto-add to `PATH` (print instructions only):
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/EIgentLab/csk-cli/main/scripts/install.sh | bash -s -- --add-path
+curl -fsSL https://raw.githubusercontent.com/EIgentLab/csk-cli/dev-v1/scripts/install.sh | bash -s -- --no-add-path
 ```
 
 Install a specific version:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/EIgentLab/csk-cli/main/scripts/install.sh | bash -s -- --version v0.1.0-alpha.1
+curl -fsSL https://raw.githubusercontent.com/EIgentLab/csk-cli/dev-v1/scripts/install.sh | bash -s -- --version v0.1.0-alpha.1
 ```
 
 ### macOS / Linux — Homebrew
