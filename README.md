@@ -7,7 +7,7 @@
 [![License: BUSL-1.1](https://img.shields.io/badge/License-BUSL--1.1-blue.svg)](https://github.com/EIgentLab/csk-cli/blob/main/LICENSE)
 [![Go 1.26.3+](https://img.shields.io/badge/Go-1.26.3+-00ADD8.svg)](https://go.dev/)
 
-[Install](#install) · [Quick Start](#quick-start) · [Commands](#commands) · [Workflow Guide](#workflow-guide) · [Skills & Agents](#skills--agents) · [Deliverables Index](#deliverables-index) · [Development](#development)
+[Install](#install) · [Quick Start](#quick-start) · [Commands](#commands) · [Workflow Guide](#workflow-guide) · [Document Lineage](#document-lineage) · [Skills & Agents](#skills--agents) · [Deliverables Index](#deliverables-index) · [Development](#development)
 
 </div>
 
@@ -16,8 +16,6 @@
 ## What is CSK CLI?
 
 `csk` is the command-line companion to the **Company Skill Kit (CSK)** — a suite of 36 skills + 10 role-based agents that power the **Inception-Driven Standard Agile** workflow for small teams (8-10 people).
-
-It does three things:
 
 | Capability | What it means |
 |---|---|
@@ -35,24 +33,19 @@ It does three things:
 curl -fsSL https://raw.githubusercontent.com/EIgentLab/csk-cli/dev-v1/scripts/install.sh | bash
 ```
 
-Installs to `~/.local/bin` (no `sudo` required). Automatically adds `~/.local/bin` to your shell `PATH` using idempotent block markers (`# >>> csk-cli >>>` / `# <<< csk-cli <<<`). Reinstalls are safe — old blocks are replaced, not duplicated.
+Installs to `~/.local/bin` (no `sudo` required). Automatically adds `~/.local/bin` to your shell `PATH` using idempotent block markers.
 
-System-wide install (requires write permission):
+System-wide install:
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/EIgentLab/csk-cli/dev-v1/scripts/install.sh | bash -s -- --install-dir /usr/local/bin
 ```
 
-Skip auto-add to `PATH` (print instructions only):
+Skip auto-add to `PATH` or install a specific version:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/EIgentLab/csk-cli/dev-v1/scripts/install.sh | bash -s -- --no-add-path
-```
-
-Install a specific version:
-
-```bash
-curl -fsSL https://raw.githubusercontent.com/EIgentLab/csk-cli/dev-v1/scripts/install.sh | bash -s -- --version v0.1.0-alpha.1
+curl -fsSL ... | bash -s -- --no-add-path
+curl -fsSL ... | bash -s -- --version v0.1.0-alpha.1
 ```
 
 ### macOS / Linux — Homebrew
@@ -60,12 +53,6 @@ curl -fsSL https://raw.githubusercontent.com/EIgentLab/csk-cli/dev-v1/scripts/in
 ```bash
 brew tap eigentlab/csk-cli https://github.com/EIgentLab/csk-cli
 brew install csk
-```
-
-Or in one line:
-
-```bash
-brew install eigentlab/csk-cli/csk
 ```
 
 ### Windows — Scoop
@@ -79,14 +66,6 @@ scoop install csk
 
 Grab the binary for your platform from the [Releases](https://github.com/EIgentLab/csk-cli/releases) page.
 
-| Platform | File pattern |
-|---|---|
-| Linux x86_64 | `csk_v*_Linux_x86_64.tar.gz` |
-| Linux arm64 | `csk_v*_Linux_arm64.tar.gz` |
-| macOS x86_64 | `csk_v*_Darwin_x86_64.tar.gz` |
-| macOS arm64 (Apple Silicon) | `csk_v*_Darwin_arm64.tar.gz` |
-| Windows x86_64 | `csk_v*_Windows_x86_64.zip` |
-
 ### Verify
 
 ```bash
@@ -98,21 +77,12 @@ csk version
 ## Quick Start
 
 ```bash
-# 1. Install skills + agents into ./.claude/ (local project)
-csk install
-
-# 2. Install globally (~/.claude/) instead
-csk install -g
-
-# 3. See what was installed
-csk list
-
-# 4. Build deliverables index (required before search/viz)
-csk db rebuild
-
-# 5. Explore available skills
-csk skills list
-csk skills search "prd"
+csk install              # Install skills + agents into ./.claude/
+csk install -g           # … or globally into ~/.claude/
+csk list                 # Show what was installed
+csk db rebuild           # Build deliverables index (required before search/viz)
+csk skills list          # Explore available skills
+csk skills search "prd"  # Fuzzy search
 ```
 
 ---
@@ -123,9 +93,9 @@ csk skills search "prd"
 
 | Command | Description | Key flags |
 |---|---|---|
-| `csk install` | Install embedded skills & agents to target directory | `-g` global, `--keep` preserve conflicts |
+| `csk install` | Install embedded skills & agents | `-g` global, `--keep` preserve conflicts |
 | `csk uninstall` | Remove all installed assets | `-g` global |
-| `csk update` | Re-install if binary version differs from manifest | `-g` global, `--dry-run` preview only |
+| `csk update` | Re-install if binary version differs | `-g` global, `--dry-run` preview only |
 | `csk list` | Show installed skills & agents from manifest | `-g` global |
 | `csk version` | Print binary version | — |
 
@@ -134,7 +104,7 @@ csk skills search "prd"
 | Command | Description | Key flags |
 |---|---|---|
 | `csk db rebuild` | Scan `deliverables/` → regenerate `artifacts.csv` + `refs.csv` | `-v` verbose |
-| `csk db verify` | Validate index integrity (stale files, broken refs, bidirectional mismatches) | — |
+| `csk db verify` | Validate index integrity | — |
 | `csk db stats` | Print artifact & ref statistics | — |
 | `csk db list` | List artifacts by phase, status, or project | `--phase P0-P6`, `--status`, `--project`, `--json` |
 
@@ -142,27 +112,27 @@ csk skills search "prd"
 
 | Command | Description | Key flags |
 |---|---|---|
-| `csk find <id>` | Look up artifact by ID — prints path + frontmatter | `--full` include body, `--json` |
-| `csk refs <id>` | List cross-references for an artifact | `--in` incoming only, `--out` outgoing only, `--all` both, `--json` |
+| `csk find <id>` | Look up artifact by ID | `--full` include body, `--json` |
+| `csk refs <id>` | List cross-references for an artifact | `--in` / `--out` / `--all`, `--json` |
 | `csk orphans` | List artifacts with no incoming or outgoing refs | `--exclude-type`, `--include-all`, `--json` |
-| `csk broken-refs` | Validate all refs — checks stale files, broken targets, bidirectional mismatches | `--json` |
-| `csk search "<query>"` | Ripgrep across deliverables with artifact annotations | `--type`, `--status`, `--limit`, `--case-sensitive`, `--json` |
+| `csk broken-refs` | Validate all refs | `--json` |
+| `csk search "<query>"` | Ripgrep across deliverables | `--type`, `--status`, `--limit`, `--case-sensitive`, `--json` |
 
 ### Skills Registry
 
 | Command | Description | Key flags |
 |---|---|---|
-| `csk skills list` | Enumerate `.claude/skills/csk-*/SKILL.md` | `--phase P0-P6`, `--owner`, `--json` |
-| `csk skills search "<query>"` | Rank skills by keyword + phase + owner relevance | `--phase`, `--owner`, `--limit`, `--json` |
+| `csk skills list` | Enumerate installed skills | `--phase P0-P6`, `--owner`, `--json` |
+| `csk skills search "<query>"` | Rank skills by keyword + phase + owner | `--phase`, `--owner`, `--limit`, `--json` |
 
 ### Visualization
 
 | Command | Description | Key flags |
 |---|---|---|
-| `csk viz graph` | Generate Mermaid flowchart of artifact references | `--type` filter, `--out` write to file |
-| `csk viz rtm` | Generate Mermaid Requirements Traceability Matrix diagram | `--type` filter, `--out` write to file |
-| `csk viz trace <id>` | Generate Mermaid trace diagram from a single artifact | `--depth` max depth (0 = unlimited), `--out` write to file |
-| `csk export` | Export deliverables index as HTML dashboard | `--html`, `--open` open in browser, `--out` path |
+| `csk viz graph` | Mermaid flowchart of artifact references | `--type` filter, `--out` file |
+| `csk viz rtm` | Mermaid RTM diagram | `--type` filter, `--out` file |
+| `csk viz trace <id>` | Mermaid trace diagram from a single artifact | `--depth` max depth, `--out` file |
+| `csk export` | Export deliverables index as HTML dashboard | `--html`, `--open`, `--out` path |
 
 > **Deprecated aliases:** `csk graph` → `csk viz graph`, `csk rtm trace` → `csk viz trace`
 
@@ -170,7 +140,7 @@ csk skills search "prd"
 
 | Command | Description | Key flags |
 |---|---|---|
-| `csk watch` | Monitor `deliverables/` for changes and auto-rebuild indexes | `-d` debounce ms (default 500), `-q` quiet |
+| `csk watch` | Monitor `deliverables/` for changes, auto-rebuild indexes | `-d` debounce ms, `-q` quiet |
 
 ---
 
@@ -190,7 +160,7 @@ P0 Discovery → P1 Inception → P2 Definition+Design → P3 Planning → P4 Sp
 
 ### Commands by Phase
 
-| Phase | Timebox | Key CSK Commands | Deliverables |
+| Phase | Timebox | Key Commands | Deliverables |
 |---|---|---|---|
 | **P0 — Discovery** | 3-5 days | `csk skills list --phase P0` | Personas, Journey Map, JTBD |
 | **P1 — Inception** | 5 days | `csk skills list --phase P1` | Vision Board, Feature Catalog, Lean Canvas |
@@ -221,8 +191,113 @@ csk watch                               # Auto-rebuild on every .md save
 # Before release, validate everything:
 csk db verify                            # Check for drift
 csk orphans                              # Find disconnected artifacts
-csk search "acceptance criteria"          // Quick content search
 ```
+
+---
+
+<a id="document-lineage"></a>
+## Document Lineage (RTM Backbone)
+
+Every **upstream** document feeds into **downstream** documents via IDs — this is the **RTM (Requirements Traceability Matrix)** in action. Arrows = "derives from".
+
+```mermaid
+flowchart LR
+    SH[Stakeholder Vision]
+    BRD[BRD-light<br/>by PM]
+    UR[User Research<br/>by UX]
+    PERS[Personas<br/>by UX]
+    JTBD[JTBD Analysis<br/>by PM/UX]
+
+    VIS[Vision Board<br/>by PM/PO]
+    FCAT[Feature Catalog YAML<br/>by PO]
+    LCAN[Lean Canvas<br/>by PM]
+
+    PRD[PRD<br/>by PO]
+    SRS[SRS-light<br/>by BA]
+    FSD[FSD-light<br/>by BA]
+    USTORY[User Story + AC<br/>by PO]
+
+    C4[C4 L1-L2<br/>by Architect]
+    ADR[ADR<br/>by Architect]
+    OAPI[OpenAPI Contract<br/>by BE + Architect]
+    ERD[ERD DB Schema<br/>by BE + Architect]
+    WF[Wireframe + Design System<br/>by UX]
+
+    WBS[WBS L1-L4 YAML<br/>by PM/PO]
+    ROADMAP[Roadmap<br/>by PM]
+    SBACK[Sprint Backlog<br/>by Team]
+    RTM[RTM<br/>by BA + QA]
+
+    TSTRAT[Test Strategy<br/>by QA]
+    TPLAN[Test Plan<br/>by QA]
+    TCASE[Test Cases<br/>by QA]
+    BUG[Bug Reports<br/>by QA]
+
+    CODE[Code + Unit Tests<br/>by Dev]
+    PR[Pull Request<br/>by Dev]
+
+    UAT[UAT Plan + Sign-off<br/>by PO + Customer]
+    RELN[Release Notes<br/>by PO]
+    RUNB[Runbook<br/>by DevOps]
+
+    SH --> BRD
+    SH --> UR
+    UR --> PERS & JTBD
+    BRD --> VIS
+    PERS --> VIS
+    JTBD --> VIS
+
+    VIS --> FCAT & LCAN
+    FCAT --> PRD
+    PRD --> SRS --> FSD --> USTORY
+    PRD --> USTORY
+
+    USTORY --> OAPI
+    USTORY --> WF
+    FSD --> ERD
+    OAPI --> ERD
+    C4 --> ADR
+    ADR --> OAPI
+
+    FCAT --> WBS
+    WBS --> ROADMAP --> SBACK
+    USTORY --> SBACK
+    USTORY --> RTM
+
+    USTORY --> TSTRAT --> TPLAN --> TCASE
+    TCASE --> RTM
+    TCASE --> BUG
+
+    USTORY --> CODE --> PR
+    OAPI --> CODE
+    WF --> CODE
+    ERD --> CODE
+
+    PR --> UAT
+    USTORY --> UAT
+    UAT --> RELN
+    RELN --> RUNB
+
+    style RTM fill:#ffeb3b,stroke:#f57f17,stroke-width:3px
+    style USTORY fill:#c8e6c9
+    style PRD fill:#bbdefb
+    style FCAT fill:#bbdefb
+    style OAPI fill:#f8bbd0
+```
+
+**RTM** (yellow) is the backbone: it links **User Story ↔ Test Case ↔ Code Commit ↔ UAT Result**. Every requirement has a test, every test traces back to a requirement.
+
+### Phase → Document Mapping
+
+| Phase | Upstream Inputs | Documents Created | Downstream Feeds |
+|-------|----------------|-------------------|-----------------|
+| **P0** | Contract/RFP | Personas, Journey Map, JTBD, User Research Report | P1 Vision |
+| **P1** | P0 outputs | Vision Board, Feature Catalog (YAML), Lean Canvas, C4 L1 | P2 PRD/SRS |
+| **P2** | P1 outputs | PRD, SRS-light, FSD-light, OpenAPI, ADR, C4 L2, Wireframe, ERD, Test Strategy | P3 WBS/RTM |
+| **P3** | P2 outputs | WBS (YAML), Roadmap, Sprint Backlog, RTM seed | P4 Stories |
+| **P4** | P3 outputs | User Stories + AC, Test Cases, Code, PRs, Burndown | P5 UAT |
+| **P5** | P4 outputs | UAT Plan + Sign-off, Release Notes, Runbook | P6 Ops |
+| **P6** | P5 outputs | Incident Reports, Patch Notes, SLA reports | P4 Backlog |
 
 ---
 
@@ -247,7 +322,7 @@ Installed to `.claude/agents/`:
 
 ### 36 Skills
 
-Installed to `.claude/skills/` — each skill is a `csk-{artifact}/SKILL.md` with template, guidelines, and examples:
+Each skill is a `csk-{artifact}/SKILL.md` with template, guidelines, and examples. See [**SKILLS_REFERENCE.md**](./SKILLS_REFERENCE.md) for full details on every skill.
 
 | Phase | Skills |
 |---|---|
@@ -258,8 +333,6 @@ Installed to `.claude/skills/` — each skill is a `csk-{artifact}/SKILL.md` wit
 | **P4** | `csk-user-story` · `csk-bug-report` · `csk-validate` · `csk-revise` |
 | **P5** | `csk-uat` |
 | **Any** | `csk-conduct` (meta-router) · `csk-orchestrate` |
-
-Browse available skills:
 
 ```bash
 csk skills list                   # All skills
@@ -307,21 +380,13 @@ upstream: [VISION-001, FCAT-001]
 implements: [FEAT-001]
 traces_to: [US-001, TC-001]
 ---
-
-# Product Requirements Document
-...
 ```
 
 ### Index Lifecycle
 
 ```bash
-# After creating/editing deliverables:
 csk db rebuild          # Regenerate artifacts.csv + refs.csv
-
-# Continuous editing:
 csk watch               # Auto-rebuild on file changes
-
-# Validate integrity:
 csk db verify            # Check stale, broken-refs, bidirectional mismatches
 csk broken-refs          # Standalone broken-refs check
 csk orphans              # Find disconnected artifacts
@@ -349,8 +414,8 @@ make release-snapshot   # Test GoReleaser locally
 
 1. Push a tag (`v*`) to `csk-cli`
 2. GitHub Actions triggers GoReleaser
-3. Binaries built for 5 platforms: `linux/amd64`, `linux/arm64`, `darwin/amd64`, `darwin/arm64`, `windows/amd64`
-4. Releases + Homebrew formula + Scoop manifest cross-pushed to this repo (`csk-cli`)
+3. Binaries built for 5 platforms
+4. Releases + Homebrew formula + Scoop manifest cross-pushed
 
 ### Project Structure
 
