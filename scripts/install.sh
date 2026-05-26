@@ -95,9 +95,11 @@ fi
 info "Installing csk $VERSION for $OS/$ARCH..."
 
 # --- Build asset URL ---
-ASSET_NAME="csk_${VERSION}_${OS}_${ARCH}.tar.gz"
+# GitHub tags include a "v" prefix (e.g. v1.0.0) but asset filenames don't
+VERSION_NUM="${VERSION#v}"
+ASSET_NAME="csk_${VERSION_NUM}_${OS}_${ARCH}.tar.gz"
 if [[ "$OS" == "Windows" ]]; then
-  ASSET_NAME="csk_${VERSION}_${OS}_${ARCH}.zip"
+  ASSET_NAME="csk_${VERSION_NUM}_${OS}_${ARCH}.zip"
 fi
 
 DOWNLOAD_URL="https://github.com/$REPO/releases/download/$VERSION/$ASSET_NAME"
