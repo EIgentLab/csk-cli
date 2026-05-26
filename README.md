@@ -35,7 +35,7 @@ It does three things:
 curl -fsSL https://raw.githubusercontent.com/EIgentLab/csk-cli/main/scripts/install.sh | bash
 ```
 
-Installs to `~/.local/bin` (no `sudo` required). If `~/.local/bin` is not in your `PATH`, the installer will print instructions.
+Installs to `~/.local/bin` (no `sudo` required). Automatically adds `~/.local/bin` to your shell `PATH` using idempotent block markers (`# >>> csk-cli >>>` / `# <<< csk-cli <<<`). Reinstalls are safe — old blocks are replaced, not duplicated.
 
 System-wide install (requires write permission):
 
@@ -43,10 +43,10 @@ System-wide install (requires write permission):
 curl -fsSL https://raw.githubusercontent.com/EIgentLab/csk-cli/main/scripts/install.sh | bash -s -- --install-dir /usr/local/bin
 ```
 
-Auto-add to shell `PATH`:
+Skip auto-add to `PATH` (print instructions only):
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/EIgentLab/csk-cli/main/scripts/install.sh | bash -s -- --add-path
+curl -fsSL https://raw.githubusercontent.com/EIgentLab/csk-cli/main/scripts/install.sh | bash -s -- --no-add-path
 ```
 
 Install a specific version:

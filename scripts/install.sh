@@ -17,7 +17,7 @@ warn()  { printf "\033[33m[WARN]\033[0m %s\n" "$1"; }
 VERSION=""
 INSTALL_DIR="$DEFAULT_INSTALL_DIR"
 VERIFY_CHECKSUM=true
-ADD_PATH=false
+ADD_PATH=true
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --version)
@@ -32,18 +32,18 @@ while [[ $# -gt 0 ]]; do
       VERIFY_CHECKSUM=false
       shift
       ;;
-    --add-path)
-      ADD_PATH=true
+    --no-add-path)
+      ADD_PATH=false
       shift
       ;;
     --help|-h)
-      echo "Usage: install.sh [--version VERSION] [--install-dir DIR] [--no-verify] [--add-path]"
+      echo "Usage: install.sh [--version VERSION] [--install-dir DIR] [--no-verify] [--no-add-path]"
       echo ""
       echo "Options:"
       echo "  --version VERSION   Install specific version (default: latest)"
       echo "  --install-dir DIR   Install to DIR (default: ~/.local/bin)"
       echo "  --no-verify         Skip checksum verification"
-      echo "  --add-path          Auto-add install dir to shell profile PATH"
+      echo "  --no-add-path       Skip auto-adding install dir to PATH"
       exit 0
       ;;
     *)
@@ -188,10 +188,16 @@ install_binary() {
   chmod +x "$dst"
 }
 
+PATH_MARKER_START="# >>> csk-cli >>>"
+PATH_MARKER_END="# <<< csk-cli <<<"
+
 check_path() {
   local dir="$1"
   case ":${PATH}:" in
-    *:"$dir":*) return 0 ;;
+    *:"$dir":*)
+      info "$dir is already in your PATH."
+      return 0
+      ;;
   esac
 
   local shell_profile=""
@@ -208,24 +214,53 @@ check_path() {
     path_line="export PATH=\"$dir:\$PATH\""
   fi
 
-  warn ""
-  warn "$dir is not in your PATH."
-  warn "Add this line to $shell_profile:"
-  warn "  $path_line"
-  warn ""
-  warn "Then run: source $shell_profile"
-
-  if [[ "$ADD_PATH" == "true" ]]; then
-    if [[ "$SHELL" == */fish ]]; then
-      mkdir -p "$HOME/.config/fish"
-    fi
-    if [[ ! -f "$shell_profile" ]]; then
-      touch "$shell_profile"
-    fi
-    echo "$path_line" >> "$shell_profile"
-    info "Added PATH entry to $shell_profile"
-    info "Run: source $shell_profile"
+  if [[ "$ADD_PATH" == "false" ]]; then
+    warn ""
+    warn "$dir is not in your PATH."
+    warn "Add this line to $shell_profile:"
+    warn "  $path_line"
+    warn ""
+    warn "Or re-run without --no-add-path to auto-add."
+    return 0
   fi
+
+  if [[ -f "$shell_profile" ]] && grep -qF "$dir" "$shell_profile" 2>/dev/null; then
+    if [[ "$(uname -s)" == "Darwin" ]]; then
+      sed -i '' "/$PATH_MARKER_START/,/$PATH_MARKER_END/d" "$shell_profile"
+    else
+      sed -i "/$PATH_MARKER_START/,/$PATH_MARKER_END/d" "$shell_profile"
+    fi
+    info "$dir is already configured in $shell_profile (existing entry found)."
+    export PATH="$dir:$PATH"
+    info "PATH updated for current session."
+    return 0
+  fi
+
+  if [[ -f "$shell_profile" ]]; then
+    if [[ "$(uname -s)" == "Darwin" ]]; then
+      sed -i '' "/$PATH_MARKER_START/,/$PATH_MARKER_END/d" "$shell_profile"
+    else
+      sed -i "/$PATH_MARKER_START/,/$PATH_MARKER_END/d" "$shell_profile"
+    fi
+  else
+    touch "$shell_profile"
+  fi
+
+  if [[ "$SHELL" == */fish ]]; then
+    mkdir -p "$(dirname "$shell_profile")"
+  fi
+
+  {
+    echo ""
+    echo "$PATH_MARKER_START"
+    echo "$path_line"
+    echo "$PATH_MARKER_END"
+  } >> "$shell_profile"
+
+  info "Added PATH entry to $shell_profile"
+  export PATH="$dir:$PATH"
+  info "PATH updated for current session."
+  info "Run 'source $shell_profile' or open a new terminal for permanent effect."
 }
 
 install_binary "$BINARY_PATH" "$INSTALL_DIR/$BINARY_NAME"
