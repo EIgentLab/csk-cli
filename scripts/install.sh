@@ -6,7 +6,7 @@ set -euo pipefail
 # Or:    curl -fsSL https://raw.githubusercontent.com/EIgentLab/csk-cli/main/scripts/install.sh | bash -s -- --version v0.1.0-alpha.1
 
 REPO="EIgentLab/csk-cli"
-DEFAULT_INSTALL_DIR="/usr/local/bin"
+DEFAULT_INSTALL_DIR="${CSK_INSTALL_DIR:-$HOME/.local/bin}"
 
 # --- Helpers ---
 info()  { printf "\033[34m[INFO]\033[0m %s\n" "$1"; }
@@ -17,6 +17,7 @@ warn()  { printf "\033[33m[WARN]\033[0m %s\n" "$1"; }
 VERSION=""
 INSTALL_DIR="$DEFAULT_INSTALL_DIR"
 VERIFY_CHECKSUM=true
+ADD_PATH=false
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --version)
@@ -31,8 +32,18 @@ while [[ $# -gt 0 ]]; do
       VERIFY_CHECKSUM=false
       shift
       ;;
+    --add-path)
+      ADD_PATH=true
+      shift
+      ;;
     --help|-h)
-      echo "Usage: install.sh [--version VERSION] [--install-dir DIR] [--no-verify]"
+      echo "Usage: install.sh [--version VERSION] [--install-dir DIR] [--no-verify] [--add-path]"
+      echo ""
+      echo "Options:"
+      echo "  --version VERSION   Install specific version (default: latest)"
+      echo "  --install-dir DIR   Install to DIR (default: ~/.local/bin)"
+      echo "  --no-verify         Skip checksum verification"
+      echo "  --add-path          Auto-add install dir to shell profile PATH"
       exit 0
       ;;
     *)
@@ -169,49 +180,56 @@ if [[ -z "$BINARY_PATH" ]]; then
   exit 1
 fi
 
-# --- Check write permission to install dir ---
 install_binary() {
   local src="$1"
   local dst="$2"
-  if [[ -d "$INSTALL_DIR" ]]; then
-    if [[ -w "$INSTALL_DIR" ]]; then
-      cp "$src" "$dst"
-      chmod +x "$dst"
-    else
-      if command -v sudo >/dev/null 2>&1; then
-        sudo cp "$src" "$dst"
-        sudo chmod +x "$dst"
-      else
-        return 1
-      fi
+  mkdir -p "$INSTALL_DIR"
+  cp "$src" "$dst"
+  chmod +x "$dst"
+}
+
+check_path() {
+  local dir="$1"
+  case ":${PATH}:" in
+    *:"$dir":*) return 0 ;;
+  esac
+
+  local shell_profile=""
+  local path_line=""
+  case "$SHELL" in
+    */zsh)  shell_profile="$HOME/.zshrc" ;;
+    */bash) shell_profile="$HOME/.bashrc" ;;
+    */fish) shell_profile="$HOME/.config/fish/config.fish"
+            path_line="set -gx PATH $dir \$PATH" ;;
+    *)      shell_profile="$HOME/.profile" ;;
+  esac
+
+  if [[ -z "$path_line" ]]; then
+    path_line="export PATH=\"$dir:\$PATH\""
+  fi
+
+  warn ""
+  warn "$dir is not in your PATH."
+  warn "Add this line to $shell_profile:"
+  warn "  $path_line"
+  warn ""
+  warn "Then run: source $shell_profile"
+
+  if [[ "$ADD_PATH" == "true" ]]; then
+    if [[ "$SHELL" == */fish ]]; then
+      mkdir -p "$HOME/.config/fish"
     fi
-  else
-    mkdir -p "$INSTALL_DIR"
-    cp "$src" "$dst"
-    chmod +x "$dst"
+    if [[ ! -f "$shell_profile" ]]; then
+      touch "$shell_profile"
+    fi
+    echo "$path_line" >> "$shell_profile"
+    info "Added PATH entry to $shell_profile"
+    info "Run: source $shell_profile"
   fi
 }
 
-if ! install_binary "$BINARY_PATH" "$INSTALL_DIR/$BINARY_NAME"; then
-  # Fallback: install to $HOME/.local/bin
-  FALLBACK_DIR="${CSK_INSTALL_DIR:-$HOME/.local/bin}"
-  warn "No write permission to $INSTALL_DIR and sudo not available."
-  warn "Falling back to: $FALLBACK_DIR"
-  mkdir -p "$FALLBACK_DIR"
-  cp "$BINARY_PATH" "$FALLBACK_DIR/$BINARY_NAME"
-  chmod +x "$FALLBACK_DIR/$BINARY_NAME"
-  INSTALL_DIR="$FALLBACK_DIR"
-  # Warn user about PATH
-  case ":${PATH}:" in
-    *:"$FALLBACK_DIR":*) ;;
-    *)
-      warn ""
-      warn "$FALLBACK_DIR is not in your PATH."
-      warn "Add this to your shell profile:"
-      warn '  export PATH="'$FALLBACK_DIR':$PATH"'
-      ;;
-  esac
-fi
+install_binary "$BINARY_PATH" "$INSTALL_DIR/$BINARY_NAME"
+check_path "$INSTALL_DIR"
 
 info "csk $VERSION installed successfully to $INSTALL_DIR/$BINARY_NAME."
 info "Run 'csk version' to verify."

@@ -32,19 +32,27 @@ It does three things:
 ### macOS / Linux — curl
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/EIgentLab/csk-cli/dev-v1/scripts/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/EIgentLab/csk-cli/main/scripts/install.sh | bash
 ```
 
-Install to a custom directory:
+Installs to `~/.local/bin` (no `sudo` required). If `~/.local/bin` is not in your `PATH`, the installer will print instructions.
+
+System-wide install (requires write permission):
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/EIgentLab/csk-cli/dev-v1/scripts/install.sh | bash -s -- --install-dir ~/bin
+curl -fsSL https://raw.githubusercontent.com/EIgentLab/csk-cli/main/scripts/install.sh | bash -s -- --install-dir /usr/local/bin
+```
+
+Auto-add to shell `PATH`:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/EIgentLab/csk-cli/main/scripts/install.sh | bash -s -- --add-path
 ```
 
 Install a specific version:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/EIgentLab/csk-cli/dev-v1/scripts/install.sh | bash -s -- --version v0.1.0-alpha.1
+curl -fsSL https://raw.githubusercontent.com/EIgentLab/csk-cli/main/scripts/install.sh | bash -s -- --version v0.1.0-alpha.1
 ```
 
 ### macOS / Linux — Homebrew
