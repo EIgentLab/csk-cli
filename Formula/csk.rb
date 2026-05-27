@@ -5,7 +5,7 @@ class Csk < Formula
   desc "Claude Skills & Agents CLI"
   homepage "https://github.com/EIgentLab/csk-cli"
   version "VERSION_PLACEHOLDER"
-  license "BUSL-1.1"
+  license "EIgentLab-1.0"
 
   on_macos do
     if Hardware::CPU.intel?

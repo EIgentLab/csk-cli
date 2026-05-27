@@ -4,7 +4,7 @@
 
 **Company Skill Kit — Install, manage, and trace deliverables for Inception-Driven Standard Agile**
 
-[![License: BUSL-1.1](https://img.shields.io/badge/License-BUSL--1.1-blue.svg)](https://github.com/EIgentLab/csk-cli/blob/main/LICENSE)
+[![License: EIgentLab Source v1.0](https://img.shields.io/badge/License-EIgentLab%20Source%20v1.0-blue.svg)](https://github.com/EIgentLab/csk-cli/blob/main/LICENSE)
 [![Go 1.26.3+](https://img.shields.io/badge/Go-1.26.3+-00ADD8.svg)](https://go.dev/)
 
 [Install](#install) · [Quick Start](#quick-start) · [Commands](#commands) · [Workflow Guide](#workflow-guide) · [Document Lineage](#document-lineage) · [Skills & Agents](#skills--agents) · [Deliverables Index](#deliverables-index) · [Development](#development)
@@ -431,4 +431,4 @@ csk-cli/                          # This repo — distribution & installers
 
 ## License
 
-BUSL-1.1 (Business Source License 1.1) — see [LICENSE](./LICENSE).
+EIgentLab Source License v1.0 — see [LICENSE](./LICENSE).
